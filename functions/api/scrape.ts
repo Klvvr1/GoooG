@@ -45,7 +45,8 @@ function parsePornstarsList(html: string, category: string) {
     // Extract listing image (scene photo from gallery - goes into gallery strip)
     const imgMatch = liContent.match(/data-src=['"]([^'"]+)['"]/i)
       || liContent.match(/src=['"](https:\/\/cdni\.pornpics\.com\/[^'"]+)['"](?![^>]*1px)/i);
-    const listingThumb = (imgMatch && imgMatch[1] && !imgMatch[1].includes('1px.png')) ? imgMatch[1] : '';
+    const rawListingThumb = (imgMatch && imgMatch[1] && !imgMatch[1].includes('1px.png')) ? imgMatch[1] : '';
+    const listingThumb = rawListingThumb.replace('/460/', '/1280/');
     
     if (name) {
       // Extract clean model slug (e.g., 'angela-white')
@@ -59,7 +60,7 @@ function parsePornstarsList(html: string, category: string) {
       const proxiedAvatarUrl = officialAvatarCdn 
         ? `/api/avatar?url=${encodeURIComponent(officialAvatarCdn)}` 
         : '';
-      // Proxied listing thumb for initial display in horizontal gallery strip
+      // Proxied listing thumb (1280px high-res) for initial display in horizontal gallery strip
       const proxiedListingThumb = listingThumb
         ? `/api/avatar?url=${encodeURIComponent(listingThumb)}`
         : '';
@@ -105,7 +106,9 @@ function parseProfileGalleries(html: string, avatarUrl?: string): string[] {
     const imgMatch = liContent.match(/data-src=['"]([^'"]+)['"]/i)
       || liContent.match(/src=['"](https:\/\/cdni\.pornpics\.com\/[^'"]+)['"]/i);
     if (imgMatch && imgMatch[1] && !imgMatch[1].includes('1px.png')) {
-      const src = imgMatch[1];
+      const rawSrc = imgMatch[1];
+      // Use /1280/ instead of /460/ for high-resolution images
+      const src = rawSrc.replace('/460/', '/1280/');
       // Exclude if it matches the profile avatar
       if (avatarUrl && (src === avatarUrl || (avatarFile && getCleanFilename(src) === avatarFile))) {
         continue;
