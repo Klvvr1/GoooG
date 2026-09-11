@@ -48,12 +48,13 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
             const finalAvatar = data.avatarUrl || item.avatarUrl;
 
             // Merge existing gallery images with newly loaded ones
-            // (data.images are all CDN gallery URLs - server already excluded the CDN avatar)
-            const merged = Array.from(new Set([...item.availableImages, ...data.images]));
+            // Exclude any avatar matches
+            const merged = Array.from(new Set([...item.availableImages, ...data.images]))
+              .filter((img) => !isAvatarMatch(img, finalAvatar));
 
             // Auto-select up to 3 gallery photos if none chosen yet
             const currentGallerySelected = item.selectedImages.filter(
-              (img) => !img.startsWith('/api/avatar')
+              (img) => !isAvatarMatch(img, finalAvatar)
             );
             const autoSelected =
               currentGallerySelected.length === 0
@@ -120,8 +121,8 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
         throw new Error(data.error || 'Failed to parse characters from source');
       }
     } catch (err) {
-      console.error('Fetch error:', err);
-      alert('Error fetching characters: ' + String(err));
+      console.error('Scraping error:', err);
+      alert('Failed to scrape: ' + (err instanceof Error ? err.message : String(err)));
     } finally {
       setIsLoading(false);
     }
@@ -132,8 +133,8 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
     setCandidates((prev) =>
       prev.map((item) => {
         if (item.id !== characterId) return item;
-        // Never allow toggling the avatar proxy URL as a gallery photo
-        if (photoUrl.startsWith('/api/avatar')) return item;
+        // Never allow toggling the avatar into gallery photos
+        if (isAvatarMatch(photoUrl, item.avatarUrl)) return item;
 
         const exists = item.selectedImages.includes(photoUrl);
         if (exists) {
@@ -160,9 +161,9 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
     const item = candidates.find((c) => c.id === characterId);
     if (!item) return;
 
-    // Filter out proxy avatar URLs from gallery images
+    // Filter out avatarUrl from character gallery images
     const galleryImages = item.selectedImages
-      .filter((u) => !u.startsWith('/api/avatar'))
+      .filter((u) => !isAvatarMatch(u, item.avatarUrl))
       .slice(0, 6);
 
     if (galleryImages.length === 0) {
@@ -190,7 +191,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
   const handleImportAll = async () => {
     const toImport = candidates.filter((c) => {
       if (importedIds.has(c.id)) return false;
-      const validPhotos = c.selectedImages.filter((u) => !u.startsWith('/api/avatar'));
+      const validPhotos = c.selectedImages.filter((u) => !isAvatarMatch(u, c.avatarUrl));
       return validPhotos.length > 0;
     });
 
@@ -201,7 +202,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
 
     for (const item of toImport) {
       const galleryImages = item.selectedImages
-        .filter((u) => !u.startsWith('/api/avatar'))
+        .filter((u) => !isAvatarMatch(u, item.avatarUrl))
         .slice(0, 6);
 
       const newChar: Character = {

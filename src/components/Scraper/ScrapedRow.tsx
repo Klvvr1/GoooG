@@ -20,11 +20,12 @@ export const ScrapedRow: React.FC<ScrapedRowProps> = ({
 }) => {
   const rowRef = useRef<HTMLDivElement>(null);
 
-  // Gallery photos = availableImages as-is (avatarUrl is now a proxy /api/avatar URL, never matches CDN gallery URLs)
-  // Still filter selectedImages against avatarUrl for backward compatibility
-  const galleryPhotos = item.availableImages;
+  // Gallery photos strictly exclude any avatar profile URL
+  const galleryPhotos = item.availableImages.filter(
+    (photoUrl) => !isAvatarMatch(photoUrl, item.avatarUrl)
+  );
   const validSelectedPhotos = item.selectedImages.filter(
-    (photoUrl) => !photoUrl.startsWith('/api/avatar')
+    (photoUrl) => !isAvatarMatch(photoUrl, item.avatarUrl)
   );
 
   const selectedCount = validSelectedPhotos.length;

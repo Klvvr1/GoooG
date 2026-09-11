@@ -23,17 +23,33 @@ export function formatTime(seconds: number): string {
 }
 
 export function isAvatarMatch(imageUrl?: string, avatarUrl?: string): boolean {
-  if (!imageUrl || !avatarUrl) return false;
+  if (!imageUrl) return false;
+  
+  // Any proxy avatar URL or models directory URL is strictly an avatar, never a gallery image
+  if (imageUrl.startsWith('/api/avatar') || imageUrl.includes('/models/')) {
+    return true;
+  }
+
+  if (!avatarUrl) return false;
   if (imageUrl === avatarUrl) return true;
-  const getCleanFilename = (u: string) => {
+
+  const extractFilename = (u: string) => {
     try {
-      const parsed = new URL(u);
-      return parsed.pathname.split('/').filter(Boolean).pop() || '';
+      // If it's a proxy url like /api/avatar?url=https%3A... unwrap the inner url
+      if (u.includes('url=')) {
+        const match = u.match(/[?&]url=([^&]+)/);
+        if (match) {
+          u = decodeURIComponent(match[1]);
+        }
+      }
+      const parsed = new URL(u, 'https://gooog-b19.pages.dev');
+      return parsed.pathname.split('/').filter(Boolean).pop()?.toLowerCase() || '';
     } catch {
-      return u.split('?')[0].split('/').filter(Boolean).pop() || '';
+      return u.split('?')[0].split('/').filter(Boolean).pop()?.toLowerCase() || '';
     }
   };
-  const f1 = getCleanFilename(imageUrl);
-  const f2 = getCleanFilename(avatarUrl);
+
+  const f1 = extractFilename(imageUrl);
+  const f2 = extractFilename(avatarUrl);
   return f1 !== '' && f1 === f2;
 }
