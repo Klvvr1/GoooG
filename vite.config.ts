@@ -122,6 +122,77 @@ function devScraperPlugin(): Plugin {
           res.end(JSON.stringify({ success: false, error: errorMessage }));
         }
       });
+
+      // Dev server in-memory storage for characters & sync
+      const devCharactersMap = new Map<string, any>();
+
+      server.middlewares.use('/api/sync', async (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', '*');
+
+        if (req.method === 'OPTIONS') {
+          res.end();
+          return;
+        }
+
+        if (req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk) => (body += chunk));
+          req.on('end', () => {
+            try {
+              const parsed = JSON.parse(body || '{}');
+              const incoming = Array.isArray(parsed.characters) ? parsed.characters : [];
+              incoming.forEach((c: any) => devCharactersMap.set(c.id, c));
+              const all = Array.from(devCharactersMap.values());
+              res.end(
+                JSON.stringify({
+                  success: true,
+                  source: 'local-dev-simulated',
+                  syncedCount: incoming.length,
+                  totalServerCount: all.length,
+                  characters: all,
+                })
+              );
+            } catch (e: any) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ success: false, error: e.message }));
+            }
+          });
+          return;
+        }
+
+        res.end(
+          JSON.stringify({
+            success: true,
+            source: 'local-dev-simulated',
+            characters: Array.from(devCharactersMap.values()),
+          })
+        );
+      });
+
+      server.middlewares.use('/api/characters', async (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', '*');
+
+        if (req.method === 'OPTIONS') {
+          res.end();
+          return;
+        }
+
+        const all = Array.from(devCharactersMap.values());
+        res.end(
+          JSON.stringify({
+            success: true,
+            count: all.length,
+            characters: all,
+            source: 'local-dev-simulated',
+          })
+        );
+      });
     },
   };
 }

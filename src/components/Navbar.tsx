@@ -1,6 +1,7 @@
-import React from 'react';
-import { Gamepad2, Users, BarChart3, Globe, RotateCcw, Download, Upload } from 'lucide-react';
+import React, { useState } from 'react';
+import { Gamepad2, Users, BarChart3, Globe, RotateCcw, Download, Upload, Cloud, Loader2 } from 'lucide-react';
 import { exportCharactersJSON, importCharactersJSON, resetDatabaseToDefaults } from '../db/db';
+import { syncWithCloud } from '../utils/cloudSync';
 
 interface NavbarProps {
   currentTab: 'lobby' | 'gallery' | 'analytics' | 'scraper';
@@ -18,6 +19,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onDataChanged,
 }) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+
 
   const handleExport = async () => {
     try {
@@ -53,6 +56,24 @@ export const Navbar: React.FC<NavbarProps> = ({
       onDataChanged();
     }
   };
+
+  const handleCloudSync = async () => {
+    setIsSyncing(true);
+    try {
+      const res = await syncWithCloud();
+      if (res.success) {
+        alert(`Cloud Sync Successful! (${res.syncedCount} synced, storage: ${res.source.toUpperCase()})`);
+        onDataChanged();
+      } else {
+        alert(`Cloud Sync Info: ${res.message || 'Running in local mode'}`);
+      }
+    } catch (e: any) {
+      alert(`Cloud sync failed: ${e.message}`);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
@@ -140,6 +161,25 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Action Tools */}
           <div className="hidden md:flex items-center gap-2">
+            <button
+              onClick={handleCloudSync}
+              disabled={isSyncing}
+              title="Sync with Cloud (Cloudflare D1 / KV)"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold transition-colors disabled:opacity-50"
+            >
+              {isSyncing ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Syncing...</span>
+                </>
+              ) : (
+                <>
+                  <Cloud className="w-3.5 h-3.5" />
+                  <span>Cloud Sync</span>
+                </>
+              )}
+            </button>
+
             <input
               ref={fileInputRef}
               type="file"
