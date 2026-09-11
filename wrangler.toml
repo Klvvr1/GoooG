@@ -7,6 +7,5 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "gooog-db"
-database_id = "gooog-db"
+database_id = "e81a040b-7f38-4071-827e-9ede137cfa0e"
 migrations_dir = "migrations"
-
