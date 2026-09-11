@@ -58,15 +58,6 @@ export async function onRequestPost(context: { request: Request; env: Env }): Pr
         createdAt: row.created_at,
         stats: row.stats ? JSON.parse(row.stats as string) : null,
       }));
-    } else if (context.env.KV) {
-      source = "kv";
-      // Merge client characters into KV
-      const cached = (await context.env.KV.get("characters:all", "json")) || [];
-      const map = new Map<string, any>();
-      (cached as any[]).forEach((c) => map.set(c.id, c));
-      clientCharacters.forEach((c) => map.set(c.id, c));
-      serverCharacters = Array.from(map.values());
-      await context.env.KV.put("characters:all", JSON.stringify(serverCharacters));
     }
 
     return new Response(

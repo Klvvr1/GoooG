@@ -61,18 +61,10 @@ export async function onRequestGet(context: { request: Request; env: Env }): Pro
       });
     }
 
-    if (context.env.KV) {
-      const cached = await context.env.KV.get("characters:all", "json");
-      const characters = Array.isArray(cached) ? cached : [];
-      return new Response(JSON.stringify({ success: true, count: characters.length, characters, source: "kv" }), {
-        headers: CORS_HEADERS,
-      });
-    }
-
     return new Response(JSON.stringify({
       success: true,
       source: "none",
-      message: "D1 or KV not bound yet. Stored in client IndexedDB.",
+      message: "Cloudflare D1 is not bound yet. Using client-side IndexedDB.",
       characters: [],
     }), { headers: CORS_HEADERS });
   } catch (err: any) {
@@ -105,11 +97,7 @@ export async function onRequestPost(context: { request: Request; env: Env }): Pr
       ).run();
     }
 
-    if (context.env.KV) {
-      await context.env.KV.put(`character:${char.id}`, JSON.stringify(char));
-    }
-
-    return new Response(JSON.stringify({ success: true, character: char }), { headers: CORS_HEADERS });
+    return new Response(JSON.stringify({ success: true, character: char, source: context.env.DB ? "d1" : "none" }), { headers: CORS_HEADERS });
   } catch (err: any) {
     return new Response(JSON.stringify({ success: false, error: err.message }), { status: 500, headers: CORS_HEADERS });
   }
@@ -126,11 +114,9 @@ export async function onRequestDelete(context: { request: Request; env: Env }): 
     if (context.env.DB) {
       await context.env.DB.prepare("DELETE FROM characters WHERE id = ?").bind(id).run();
     }
-    if (context.env.KV) {
-      await context.env.KV.delete(`character:${id}`);
-    }
-    return new Response(JSON.stringify({ success: true, deletedId: id }), { headers: CORS_HEADERS });
+    return new Response(JSON.stringify({ success: true, deletedId: id, source: context.env.DB ? "d1" : "none" }), { headers: CORS_HEADERS });
   } catch (err: any) {
     return new Response(JSON.stringify({ success: false, error: err.message }), { status: 500, headers: CORS_HEADERS });
   }
 }
+
