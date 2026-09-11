@@ -42,26 +42,34 @@ function parsePornstarsList(html: string, category: string) {
       || liContent.match(/title=['"]([^'"]+)['"]/i);
     const name = nameMatch ? nameMatch[1].trim() : '';
     
-    // Extract listing image
+    // Extract listing image (scene photo from gallery - goes into gallery strip)
     const imgMatch = liContent.match(/data-src=['"]([^'"]+)['"]/i)
-      || liContent.match(/src=['"](https:\/\/cdni\.pornpics\.com\/[^'"]+)['"]/i);
-    const listingThumb = imgMatch ? imgMatch[1] : '';
+      || liContent.match(/src=['"](https:\/\/cdni\.pornpics\.com\/[^'"]+)['"](?![^>]*1px)/i);
+    const listingThumb = (imgMatch && imgMatch[1] && !imgMatch[1].includes('1px.png')) ? imgMatch[1] : '';
     
     if (name) {
       // Extract clean model slug (e.g., 'angela-white')
       const cleanSlug = href.replace(/\/$/, '').split('/').pop()?.toLowerCase() || '';
       const firstChar = cleanSlug.charAt(0);
-      // Official model avatar profile from PornPics
-      const officialAvatar = cleanSlug ? `https://cdni.pornpics.com/models/${firstChar}/${cleanSlug.replace(/-/g, '_')}.jpg` : '';
+      
+      // Official model avatar URL - proxied through our /api/avatar endpoint so it loads in browser
+      const officialAvatarCdn = cleanSlug 
+        ? `https://cdni.pornpics.com/models/${firstChar}/${cleanSlug.replace(/-/g, '_')}.jpg` 
+        : '';
+      const proxiedAvatarUrl = officialAvatarCdn 
+        ? `/api/avatar?url=${encodeURIComponent(officialAvatarCdn)}` 
+        : listingThumb;
 
       results.push({
         id: `pp-${cleanSlug || Math.random().toString(36).slice(2, 8)}`,
         name,
         category,
         profileUrl: href,
-        avatarUrl: officialAvatar || listingThumb, // Official avatar profile from the site in the small box!
-        availableImages: listingThumb && !listingThumb.includes('1px.png') ? [listingThumb] : [],
-        selectedImages: listingThumb && !listingThumb.includes('1px.png') ? [listingThumb] : [],
+        // Proxied avatar URL for the small square box - always the official profile photo
+        avatarUrl: proxiedAvatarUrl,
+        // Start with listing thumb in gallery. Lazy-load will add more gallery photos.
+        availableImages: listingThumb ? [listingThumb] : [],
+        selectedImages: listingThumb ? [listingThumb] : [],
       });
     }
   }
@@ -132,13 +140,18 @@ export async function onRequestGet(context: { request: Request }): Promise<Respo
       });
       const html = await res.text();
 
-      // Extract official entity-card-avatar from model's profile page
+      // Extract official entity-card-avatar CDN URL from model's profile page
       const avatarMatch = html.match(/class=['"][^'"]*entity-card-avatar[^'"]*['"][^>]*>[\s\S]*?<img[^>]+src=['"]([^'"]+)['"]/i)
         || html.match(/<img[^>]+src=['"](https:\/\/cdni\.pornpics\.com\/models\/[^'"]+)['"]/i);
-      const exactAvatar = avatarMatch ? avatarMatch[1] : avatarUrl;
+      const exactAvatarCdn = avatarMatch ? avatarMatch[1] : null;
+      
+      // Always proxy avatar image through our /api/avatar endpoint
+      const proxiedAvatar = exactAvatarCdn
+        ? `/api/avatar?url=${encodeURIComponent(exactAvatarCdn)}`
+        : avatarUrl; // Fall back to whatever was passed in (already proxied)
 
-      const images = parseProfileGalleries(html, exactAvatar);
-      return new Response(JSON.stringify({ success: true, profileUrl, avatarUrl: exactAvatar, images }), {
+      const images = parseProfileGalleries(html, exactAvatarCdn || undefined);
+      return new Response(JSON.stringify({ success: true, profileUrl, avatarUrl: proxiedAvatar, images }), {
         headers: CORS_HEADERS,
       });
     }

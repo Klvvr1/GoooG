@@ -44,24 +44,21 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
           prev.map((item) => {
             if (item.id !== characterId) return item;
 
+            // Update avatar to proxied URL if server returned one
             const finalAvatar = data.avatarUrl || item.avatarUrl;
 
-            // Exclude avatar from gallery photos
-            const filteredNewImages = data.images.filter(
-              (img: string) => !isAvatarMatch(img, finalAvatar)
-            );
-
-            const merged = Array.from(new Set([...item.availableImages, ...filteredNewImages]))
-              .filter((img) => !isAvatarMatch(img, finalAvatar));
+            // Merge existing gallery images with newly loaded ones
+            // (data.images are all CDN gallery URLs - server already excluded the CDN avatar)
+            const merged = Array.from(new Set([...item.availableImages, ...data.images]));
 
             // Auto-select up to 3 gallery photos if none chosen yet
-            const currentSelected = item.selectedImages.filter(
-              (img) => !isAvatarMatch(img, finalAvatar)
+            const currentGallerySelected = item.selectedImages.filter(
+              (img) => !img.startsWith('/api/avatar')
             );
             const autoSelected =
-              currentSelected.length === 0
+              currentGallerySelected.length === 0
                 ? merged.slice(0, Math.min(3, merged.length))
-                : currentSelected;
+                : currentGallerySelected;
 
             return {
               ...item,
@@ -135,8 +132,8 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
     setCandidates((prev) =>
       prev.map((item) => {
         if (item.id !== characterId) return item;
-        // Never allow toggling the avatar into gallery photos
-        if (isAvatarMatch(photoUrl, item.avatarUrl)) return item;
+        // Never allow toggling the avatar proxy URL as a gallery photo
+        if (photoUrl.startsWith('/api/avatar')) return item;
 
         const exists = item.selectedImages.includes(photoUrl);
         if (exists) {
@@ -163,9 +160,9 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
     const item = candidates.find((c) => c.id === characterId);
     if (!item) return;
 
-    // Filter out avatarUrl from character gallery images
+    // Filter out proxy avatar URLs from gallery images
     const galleryImages = item.selectedImages
-      .filter((u) => !isAvatarMatch(u, item.avatarUrl))
+      .filter((u) => !u.startsWith('/api/avatar'))
       .slice(0, 6);
 
     if (galleryImages.length === 0) {
@@ -178,7 +175,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
       name: item.name,
       category: item.category,
       images: galleryImages, // Strictly gallery photos - avatar is not added here!
-      avatarUrl: item.avatarUrl, // Profile avatar from the site
+      avatarUrl: item.avatarUrl, // Profile avatar (proxied through /api/avatar)
       enabled: true,
       createdAt: Date.now(),
       stats: createDefaultSRSStats(),
@@ -193,7 +190,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
   const handleImportAll = async () => {
     const toImport = candidates.filter((c) => {
       if (importedIds.has(c.id)) return false;
-      const validPhotos = c.selectedImages.filter((u) => !isAvatarMatch(u, c.avatarUrl));
+      const validPhotos = c.selectedImages.filter((u) => !u.startsWith('/api/avatar'));
       return validPhotos.length > 0;
     });
 
@@ -204,7 +201,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
 
     for (const item of toImport) {
       const galleryImages = item.selectedImages
-        .filter((u) => !isAvatarMatch(u, item.avatarUrl))
+        .filter((u) => !u.startsWith('/api/avatar'))
         .slice(0, 6);
 
       const newChar: Character = {
