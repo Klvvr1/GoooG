@@ -73,7 +73,10 @@ export interface ScrapedCandidate {
   name: string;
   category: string;
   avatarUrl: string;
+  profileUrl?: string;
   availableImages: string[];
   selectedImages: string[];
   isImported?: boolean;
+  isLoadingPhotos?: boolean;
 }
+
