@@ -90,6 +90,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': '*',
+  'Cache-Control': 'public, max-age=3600, s-maxage=86400',
 };
 
 export async function onRequestGet(context: { request: Request }): Promise<Response> {

@@ -1,12 +1,12 @@
-import React from 'react';
-import { Check, Plus, Image as ImageIcon, CheckCircle2, Loader2, Images } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Check, Plus, Image as ImageIcon, CheckCircle2, Loader2 } from 'lucide-react';
 import { ScrapedCandidate } from '../../types';
 
 interface ScrapedRowProps {
   item: ScrapedCandidate;
   onTogglePhoto: (characterId: string, photoUrl: string) => void;
   onImport: (characterId: string) => void;
-  onFetchMorePhotos?: (characterId: string, profileUrl: string) => void;
+  onLazyLoadPhotos?: (characterId: string, profileUrl: string) => void;
   isImported: boolean;
 }
 
@@ -14,14 +14,45 @@ export const ScrapedRow: React.FC<ScrapedRowProps> = ({
   item,
   onTogglePhoto,
   onImport,
-  onFetchMorePhotos,
+  onLazyLoadPhotos,
   isImported,
 }) => {
+  const rowRef = useRef<HTMLDivElement>(null);
   const selectedCount = item.selectedImages.length;
   const isValidCount = selectedCount >= 1 && selectedCount <= 6;
 
+  // IntersectionObserver for lazy loading character gallery photos when scrolled near
+  useEffect(() => {
+    if (!item.profileUrl || item.hasLoadedPhotos || item.isLoadingPhotos || !onLazyLoadPhotos) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          onLazyLoadPhotos(item.id, item.profileUrl!);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: '300px', // start loading when 300px before appearing on screen
+        threshold: 0.01,
+      }
+    );
+
+    if (rowRef.current) {
+      observer.observe(rowRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [item.id, item.profileUrl, item.hasLoadedPhotos, item.isLoadingPhotos, onLazyLoadPhotos]);
+
   return (
     <div
+      ref={rowRef}
       className={`p-5 rounded-3xl border transition-all duration-200 space-y-4 ${
         isImported
           ? 'bg-emerald-950/20 border-emerald-500/40 shadow-sm'
@@ -37,6 +68,7 @@ export const ScrapedRow: React.FC<ScrapedRowProps> = ({
               alt={item.name}
               className="w-full h-full object-cover object-center"
               loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -53,34 +85,18 @@ export const ScrapedRow: React.FC<ScrapedRowProps> = ({
               <span className={selectedCount > 6 || selectedCount < 1 ? 'text-amber-400 font-bold' : 'text-indigo-400 font-semibold'}>
                 {selectedCount}/6 photos chosen
               </span>
+              {item.isLoadingPhotos && (
+                <span className="flex items-center gap-1 text-[11px] text-indigo-400 animate-pulse">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <span>Loading gallery...</span>
+                </span>
+              )}
             </p>
           </div>
         </div>
 
         {/* Actions */}
         <div className="flex items-center gap-2.5 flex-wrap">
-          {item.profileUrl && onFetchMorePhotos && (
-            <button
-              type="button"
-              disabled={item.isLoadingPhotos}
-              onClick={() => onFetchMorePhotos(item.id, item.profileUrl!)}
-              className="px-3.5 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50"
-              title="Fetch more gallery photos for this character"
-            >
-              {item.isLoadingPhotos ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-400" />
-                  <span>Loading Photos...</span>
-                </>
-              ) : (
-                <>
-                  <Images className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Fetch Gallery Photos</span>
-                </>
-              )}
-            </button>
-          )}
-
           {isImported ? (
             <div className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -129,6 +145,7 @@ export const ScrapedRow: React.FC<ScrapedRowProps> = ({
                   alt={`Photo ${idx + 1}`}
                   className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform"
                   loading="lazy"
+                  decoding="async"
                 />
 
                 {/* Selection Checkbox Badge */}
@@ -149,9 +166,24 @@ export const ScrapedRow: React.FC<ScrapedRowProps> = ({
               </div>
             );
           })}
+
+          {/* Skeleton placeholders while loading gallery photos */}
+          {item.isLoadingPhotos && (
+            <>
+              {[1, 2, 3].map((s) => (
+                <div
+                  key={`skeleton-${s}`}
+                  className="w-24 h-28 flex-shrink-0 rounded-xl bg-zinc-800/60 border border-zinc-700/50 animate-pulse flex items-center justify-center"
+                >
+                  <Loader2 className="w-4 h-4 text-zinc-500 animate-spin" />
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
+
 

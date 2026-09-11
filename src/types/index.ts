@@ -78,5 +78,7 @@ export interface ScrapedCandidate {
   selectedImages: string[];
   isImported?: boolean;
   isLoadingPhotos?: boolean;
+  hasLoadedPhotos?: boolean;
 }
+
 

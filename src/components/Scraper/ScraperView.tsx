@@ -21,46 +21,11 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
   const [activeSourceUrl, setActiveSourceUrl] = useState<string>('');
   const [candidates, setCandidates] = useState<ScrapedCandidate[]>([]);
   const [importedIds, setImportedIds] = useState<Set<string>>(new Set());
-  const [isBatchLoadingPhotos, setIsBatchLoadingPhotos] = useState(false);
 
   const categories = INITIAL_CATEGORIES.filter((c) => c.id !== 'mix').map((c) => c.name);
 
-  // Perform Scrape / Fetch
-  const handleFetch = async () => {
-    setIsLoading(true);
-
-    try {
-      let endpoint = `/api/scrape?category=${encodeURIComponent(selectedCategory)}&page=${pageNumber}`;
-      if (customTargetUrl.trim()) {
-        endpoint += `&target=${encodeURIComponent(customTargetUrl.trim())}`;
-      }
-
-      const res = await fetch(endpoint);
-      const data = await res.json();
-
-      if (data.success && Array.isArray(data.candidates)) {
-        let results: ScrapedCandidate[] = data.candidates;
-        setActiveSourceUrl(data.sourceUrl || '');
-
-        if (nameQuery.trim()) {
-          const q = nameQuery.toLowerCase().trim();
-          results = results.filter((c) => c.name.toLowerCase().includes(q));
-        }
-
-        setCandidates(results);
-      } else {
-        throw new Error(data.error || 'Failed to parse characters from source');
-      }
-    } catch (err) {
-      console.error('Fetch error:', err);
-      alert('Error fetching characters: ' + String(err));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Fetch more photos for a single character
-  const handleFetchMorePhotos = async (characterId: string, profileUrl: string) => {
+  // Lazy load photos for a single character on demand / viewport intersection
+  const handleLazyLoadPhotos = async (characterId: string, profileUrl: string) => {
     setCandidates((prev) =>
       prev.map((c) => (c.id === characterId ? { ...c, isLoadingPhotos: true } : c))
     );
@@ -85,41 +50,64 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
               availableImages: merged,
               selectedImages: autoSelected,
               isLoadingPhotos: false,
+              hasLoadedPhotos: true,
             };
           })
         );
       } else {
         setCandidates((prev) =>
-          prev.map((c) => (c.id === characterId ? { ...c, isLoadingPhotos: false } : c))
+          prev.map((c) => (c.id === characterId ? { ...c, isLoadingPhotos: false, hasLoadedPhotos: true } : c))
         );
       }
     } catch (e) {
-      console.error('Error fetching gallery photos:', e);
+      console.error('Error lazy loading gallery photos:', e);
       setCandidates((prev) =>
         prev.map((c) => (c.id === characterId ? { ...c, isLoadingPhotos: false } : c))
       );
     }
   };
 
-  // Batch fetch gallery photos for all candidates that have a profileUrl
-  const handleBatchFetchPhotos = async () => {
-    const targets = candidates.filter((c) => c.profileUrl && c.availableImages.length <= 1);
-    if (targets.length === 0) {
-      alert('All characters already have extra gallery photos loaded.');
-      return;
-    }
+  // Perform Scrape / Fetch for all characters on page
+  const handleFetch = async () => {
+    setIsLoading(true);
 
-    setIsBatchLoadingPhotos(true);
     try {
-      // Process concurrently in chunks of 5
-      for (let i = 0; i < targets.length; i += 5) {
-        const chunk = targets.slice(i, i + 5);
-        await Promise.allSettled(
-          chunk.map((item) => handleFetchMorePhotos(item.id, item.profileUrl!))
-        );
+      let endpoint = `/api/scrape?category=${encodeURIComponent(selectedCategory)}&page=${pageNumber}`;
+      if (customTargetUrl.trim()) {
+        endpoint += `&target=${encodeURIComponent(customTargetUrl.trim())}`;
       }
+
+      const res = await fetch(endpoint);
+      const data = await res.json();
+
+      if (data.success && Array.isArray(data.candidates)) {
+        let results: ScrapedCandidate[] = data.candidates.map((c: ScrapedCandidate) => ({
+          ...c,
+          isLoadingPhotos: false,
+          hasLoadedPhotos: false,
+        }));
+        setActiveSourceUrl(data.sourceUrl || '');
+
+        if (nameQuery.trim()) {
+          const q = nameQuery.toLowerCase().trim();
+          results = results.filter((c) => c.name.toLowerCase().includes(q));
+        }
+
+        setCandidates(results);
+
+        // Preload gallery photos for the first 3 characters immediately for instant UX
+        const topChars = results.slice(0, 3).filter((c) => c.profileUrl);
+        topChars.forEach((c) => {
+          handleLazyLoadPhotos(c.id, c.profileUrl!);
+        });
+      } else {
+        throw new Error(data.error || 'Failed to parse characters from source');
+      }
+    } catch (err) {
+      console.error('Fetch error:', err);
+      alert('Error fetching characters: ' + String(err));
     } finally {
-      setIsBatchLoadingPhotos(false);
+      setIsLoading(false);
     }
   };
 
@@ -211,13 +199,13 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
             <Globe className="w-3.5 h-3.5" />
-            <span>Smart Scraper & Batch Importer</span>
+            <span>Smart Scraper & Lazy-Loading Importer</span>
           </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
             Smart Character Scraper
           </h1>
           <p className="text-sm text-zinc-400 mt-1">
-            Browse and scrape characters from PornPics. Select 1 to 6 photos from the horizontal strip to import directly into your GoooG game.
+            Browse and scrape characters from PornPics. Photos are lazy-loaded smoothly on scroll for optimal performance.
           </p>
           {activeSourceUrl && (
             <div className="mt-2 flex items-center gap-2 text-xs text-indigo-300">
@@ -236,26 +224,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
         </div>
 
         {candidates.length > 0 && (
-          <div className="flex items-center gap-3 flex-wrap">
-            <button
-              type="button"
-              disabled={isBatchLoadingPhotos}
-              onClick={handleBatchFetchPhotos}
-              className="px-4 py-3 rounded-2xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 font-semibold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-            >
-              {isBatchLoadingPhotos ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin text-indigo-400" />
-                  <span>Fetching Galleries...</span>
-                </>
-              ) : (
-                <>
-                  <Images className="w-4 h-4 text-indigo-400" />
-                  <span>Fetch All Galleries</span>
-                </>
-              )}
-            </button>
-
+          <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={handleImportAll}
@@ -267,6 +236,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
           </div>
         )}
       </div>
+
 
       {/* Scraper Control Filters */}
       <div className="p-6 rounded-3xl bg-zinc-900/90 border border-zinc-800 space-y-4">
@@ -381,7 +351,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
               item={item}
               onTogglePhoto={handleTogglePhoto}
               onImport={handleImportSingle}
-              onFetchMorePhotos={handleFetchMorePhotos}
+              onLazyLoadPhotos={handleLazyLoadPhotos}
               isImported={importedIds.has(item.id)}
             />
           ))
