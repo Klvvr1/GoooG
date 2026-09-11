@@ -81,6 +81,12 @@ export const ScrapedRow: React.FC<ScrapedRowProps> = ({
                 className="w-full h-full object-cover object-center"
                 loading="lazy"
                 decoding="async"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (item.availableImages[0] && target.src !== item.availableImages[0]) {
+                    target.src = item.availableImages[0];
+                  }
+                }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-stone-600">

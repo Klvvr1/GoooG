@@ -42,21 +42,26 @@ function parsePornstarsList(html: string, category: string) {
       || liContent.match(/title=['"]([^'"]+)['"]/i);
     const name = nameMatch ? nameMatch[1].trim() : '';
     
-    // Extract image
+    // Extract listing image
     const imgMatch = liContent.match(/data-src=['"]([^'"]+)['"]/i)
       || liContent.match(/src=['"](https:\/\/cdni\.pornpics\.com\/[^'"]+)['"]/i);
-    const avatarUrl = imgMatch ? imgMatch[1] : '';
+    const listingThumb = imgMatch ? imgMatch[1] : '';
     
-    if (avatarUrl && name && !avatarUrl.includes('1px.png')) {
-      const slug = href.replace(/^https?:\/\/[^\/]+/, '').replace(/^\/pornstars\//, '').replace(/\/$/, '');
+    if (name) {
+      // Extract clean model slug (e.g., 'angela-white')
+      const cleanSlug = href.replace(/\/$/, '').split('/').pop()?.toLowerCase() || '';
+      const firstChar = cleanSlug.charAt(0);
+      // Official model avatar profile from PornPics
+      const officialAvatar = cleanSlug ? `https://cdni.pornpics.com/models/${firstChar}/${cleanSlug.replace(/-/g, '_')}.jpg` : '';
+
       results.push({
-        id: `pp-${slug || Math.random().toString(36).slice(2, 8)}`,
+        id: `pp-${cleanSlug || Math.random().toString(36).slice(2, 8)}`,
         name,
         category,
         profileUrl: href,
-        avatarUrl,
-        availableImages: [],
-        selectedImages: [],
+        avatarUrl: officialAvatar || listingThumb, // Official avatar profile from the site in the small box!
+        availableImages: listingThumb && !listingThumb.includes('1px.png') ? [listingThumb] : [],
+        selectedImages: listingThumb && !listingThumb.includes('1px.png') ? [listingThumb] : [],
       });
     }
   }
@@ -126,8 +131,14 @@ export async function onRequestGet(context: { request: Request }): Promise<Respo
         },
       });
       const html = await res.text();
-      const images = parseProfileGalleries(html, avatarUrl);
-      return new Response(JSON.stringify({ success: true, profileUrl, images }), {
+
+      // Extract official entity-card-avatar from model's profile page
+      const avatarMatch = html.match(/class=['"][^'"]*entity-card-avatar[^'"]*['"][^>]*>[\s\S]*?<img[^>]+src=['"]([^'"]+)['"]/i)
+        || html.match(/<img[^>]+src=['"](https:\/\/cdni\.pornpics\.com\/models\/[^'"]+)['"]/i);
+      const exactAvatar = avatarMatch ? avatarMatch[1] : avatarUrl;
+
+      const images = parseProfileGalleries(html, exactAvatar);
+      return new Response(JSON.stringify({ success: true, profileUrl, avatarUrl: exactAvatar, images }), {
         headers: CORS_HEADERS,
       });
     }

@@ -44,17 +44,19 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
           prev.map((item) => {
             if (item.id !== characterId) return item;
 
+            const finalAvatar = data.avatarUrl || item.avatarUrl;
+
             // Exclude avatar from gallery photos
             const filteredNewImages = data.images.filter(
-              (img: string) => !isAvatarMatch(img, item.avatarUrl)
+              (img: string) => !isAvatarMatch(img, finalAvatar)
             );
 
             const merged = Array.from(new Set([...item.availableImages, ...filteredNewImages]))
-              .filter((img) => !isAvatarMatch(img, item.avatarUrl));
+              .filter((img) => !isAvatarMatch(img, finalAvatar));
 
             // Auto-select up to 3 gallery photos if none chosen yet
             const currentSelected = item.selectedImages.filter(
-              (img) => !isAvatarMatch(img, item.avatarUrl)
+              (img) => !isAvatarMatch(img, finalAvatar)
             );
             const autoSelected =
               currentSelected.length === 0
@@ -63,6 +65,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
 
             return {
               ...item,
+              avatarUrl: finalAvatar,
               availableImages: merged,
               selectedImages: autoSelected,
               isLoadingPhotos: false,
@@ -99,8 +102,6 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
       if (data.success && Array.isArray(data.candidates)) {
         let results: ScrapedCandidate[] = data.candidates.map((c: ScrapedCandidate) => ({
           ...c,
-          availableImages: [],
-          selectedImages: [],
           isLoadingPhotos: false,
           hasLoadedPhotos: false,
         }));
