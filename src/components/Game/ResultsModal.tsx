@@ -33,14 +33,14 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
-      <div className="relative w-full max-w-2xl my-8 rounded-3xl bg-zinc-900 border border-zinc-800 shadow-2xl p-6 sm:p-8 space-y-8">
+      <div className="relative w-full max-w-2xl my-8 rounded-3xl bg-stone-900 border border-stone-800 shadow-2xl p-6 sm:p-8 space-y-8">
         {/* Header & Trophy */}
         <div className="text-center space-y-3">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-500 to-orange-600 shadow-xl shadow-amber-500/20 text-white mx-auto">
             <Trophy className="w-10 h-10" />
           </div>
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
               {summary.category} • {summary.mode === 'classic' ? 'Classic Mode' : 'Match Mode'}
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mt-1">
@@ -51,30 +51,30 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="p-4 rounded-2xl bg-zinc-800/60 border border-zinc-700/50 text-center">
-            <span className="text-xs text-zinc-400 uppercase font-semibold">Final Score</span>
+          <div className="p-4 rounded-2xl bg-stone-800/60 border border-stone-700/50 text-center">
+            <span className="text-xs text-stone-400 uppercase font-semibold">Final Score</span>
             <div className="text-2xl font-black text-white mt-1">
               {score} / {totalQuestions}
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-zinc-800/60 border border-zinc-700/50 text-center">
-            <span className="text-xs text-zinc-400 uppercase font-semibold">Accuracy</span>
+          <div className="p-4 rounded-2xl bg-stone-800/60 border border-stone-700/50 text-center">
+            <span className="text-xs text-stone-400 uppercase font-semibold">Accuracy</span>
             <div className={`text-2xl font-black mt-1 ${accuracy >= 80 ? 'text-emerald-400' : accuracy >= 50 ? 'text-amber-400' : 'text-rose-400'}`}>
               {accuracy}%
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-zinc-800/60 border border-zinc-700/50 text-center">
-            <span className="text-xs text-zinc-400 uppercase font-semibold">Duration</span>
+          <div className="p-4 rounded-2xl bg-stone-800/60 border border-stone-700/50 text-center">
+            <span className="text-xs text-stone-400 uppercase font-semibold">Duration</span>
             <div className="text-2xl font-black text-white mt-1 flex items-center justify-center gap-1">
-              <Clock className="w-4 h-4 text-zinc-400" />
+              <Clock className="w-4 h-4 text-stone-400" />
               <span>{formatTime(durationSeconds)}</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-zinc-800/60 border border-zinc-700/50 text-center">
-            <span className="text-xs text-zinc-400 uppercase font-semibold">Mistakes</span>
+          <div className="p-4 rounded-2xl bg-stone-800/60 border border-stone-700/50 text-center">
+            <span className="text-xs text-stone-400 uppercase font-semibold">Mistakes</span>
             <div className={`text-2xl font-black mt-1 ${hasMistakes ? 'text-rose-400' : 'text-emerald-400'}`}>
               {mistakes.length}
             </div>
@@ -97,7 +97,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
           <button
             type="button"
             onClick={onPlayAgain}
-            className="flex-1 py-3.5 px-5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all"
+            className="flex-1 py-3.5 px-5 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm shadow-lg shadow-amber-600/30 flex items-center justify-center gap-2 transition-all"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Play Again</span>
@@ -106,14 +106,14 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
           <button
             type="button"
             onClick={onBackToLobby}
-            className="py-3.5 px-5 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold text-sm transition-all"
+            className="py-3.5 px-5 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold text-sm transition-all"
           >
             Lobby
           </button>
         </div>
 
         {/* Mistakes Review List */}
-        <div className="space-y-3 pt-2 border-t border-zinc-800">
+        <div className="space-y-3 pt-2 border-t border-stone-800">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
               {hasMistakes ? (
@@ -129,7 +129,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
               )}
             </h3>
             {hasMistakes && (
-              <span className="text-xs text-zinc-400">
+              <span className="text-xs text-stone-400">
                 Spaced Repetition intervals adjusted for these characters.
               </span>
             )}
@@ -140,23 +140,23 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
               {mistakes.map((m, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800/40 border border-zinc-700/60"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-stone-800/40 border border-stone-700/60"
                 >
                   <img
                     src={m.imageShown || m.character.avatarUrl || m.character.images[0]}
                     alt={m.correctAnswer}
-                    className="w-12 h-14 object-cover rounded-lg flex-shrink-0 border border-zinc-700"
+                    className="w-12 h-14 object-cover rounded-lg flex-shrink-0 border border-stone-700"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-white text-sm truncate">
                         {m.correctAnswer}
                       </span>
-                      <span className="px-2 py-0.2 text-[10px] uppercase font-bold rounded-full bg-zinc-700 text-zinc-300">
+                      <span className="px-2 py-0.2 text-[10px] uppercase font-bold rounded-full bg-stone-700 text-stone-300">
                         {m.character.category}
                       </span>
                     </div>
-                    <div className="text-xs text-zinc-400 mt-0.5">
+                    <div className="text-xs text-stone-400 mt-0.5">
                       You guessed: <span className="text-rose-400 font-semibold">{m.userAnswer || 'None'}</span>
                     </div>
                   </div>

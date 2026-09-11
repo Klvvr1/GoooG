@@ -100,20 +100,20 @@ export const CharacterFormModal: React.FC<CharacterFormModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl my-8 rounded-3xl bg-zinc-900 border border-zinc-800 shadow-2xl p-6 sm:p-8 space-y-6">
+      <div className="relative w-full max-w-xl my-8 rounded-3xl bg-stone-900 border border-stone-800 shadow-2xl p-6 sm:p-8 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+        <div className="flex items-center justify-between pb-3 border-b border-stone-800">
           <div>
             <h2 className="text-2xl font-bold text-white">
               {initialCharacter ? 'Edit Character' : 'Add New Character'}
             </h2>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-xs text-stone-400 mt-0.5">
               Characters require a name, category, and between 1 and 6 photo URLs.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            className="p-2 rounded-xl text-stone-400 hover:text-white hover:bg-stone-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -123,7 +123,7 @@ export const CharacterFormModal: React.FC<CharacterFormModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name Field */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+            <label className="text-xs font-bold uppercase tracking-wider text-stone-300">
               Character Name *
             </label>
             <input
@@ -132,19 +132,19 @@ export const CharacterFormModal: React.FC<CharacterFormModalProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Scarlett Monroe"
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-stone-800/80 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
             />
           </div>
 
           {/* Category Field */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+            <label className="text-xs font-bold uppercase tracking-wider text-stone-300">
               Category *
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-stone-800/80 border border-stone-700 text-white focus:outline-none focus:border-amber-500 transition-colors text-sm"
             >
               {categoriesList.map((cat) => (
                 <option key={cat} value={cat}>
@@ -160,7 +160,7 @@ export const CharacterFormModal: React.FC<CharacterFormModalProps> = ({
                 value={customCategory}
                 onChange={(e) => setCustomCategory(e.target.value)}
                 placeholder="Type custom category name..."
-                className="w-full mt-2 px-4 py-2.5 rounded-xl bg-zinc-800/80 border border-indigo-500/50 text-white placeholder-zinc-500 focus:outline-none text-sm"
+                className="w-full mt-2 px-4 py-2.5 rounded-xl bg-stone-800/80 border border-amber-500/50 text-white placeholder-stone-500 focus:outline-none text-sm"
               />
             )}
           </div>
@@ -168,15 +168,15 @@ export const CharacterFormModal: React.FC<CharacterFormModalProps> = ({
           {/* Photos URL Manager (1 to 6) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
-                <ImageIcon className="w-3.5 h-3.5 text-indigo-400" />
+              <label className="text-xs font-bold uppercase tracking-wider text-stone-300 flex items-center gap-1.5">
+                <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
                 <span>Photos ({images.filter((u) => u.trim()).length} of 6 max) *</span>
               </label>
               {images.length < 6 && (
                 <button
                   type="button"
                   onClick={handleAddImageUrl}
-                  className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                  className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Another Photo URL</span>
@@ -187,7 +187,7 @@ export const CharacterFormModal: React.FC<CharacterFormModalProps> = ({
             <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
               {images.map((url, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-zinc-700 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-stone-800 border border-stone-700 overflow-hidden flex-shrink-0 flex items-center justify-center">
                     {url.trim() ? (
                       <img
                         src={url}
@@ -198,7 +198,7 @@ export const CharacterFormModal: React.FC<CharacterFormModalProps> = ({
                         }}
                       />
                     ) : (
-                      <ImageIcon className="w-4 h-4 text-zinc-600" />
+                      <ImageIcon className="w-4 h-4 text-stone-600" />
                     )}
                   </div>
                   <input
@@ -206,12 +206,12 @@ export const CharacterFormModal: React.FC<CharacterFormModalProps> = ({
                     value={url}
                     onChange={(e) => handleImageUrlChange(idx, e.target.value)}
                     placeholder={`Photo URL #${idx + 1} (https://...)`}
-                    className="flex-1 px-3 py-2 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 text-xs"
+                    className="flex-1 px-3 py-2 rounded-xl bg-stone-800/80 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-amber-500 text-xs"
                   />
                   <button
                     type="button"
                     onClick={() => handleRemoveImageUrl(idx)}
-                    className="p-2 rounded-lg text-zinc-500 hover:text-rose-400 hover:bg-zinc-800 transition-colors"
+                    className="p-2 rounded-lg text-stone-500 hover:text-rose-400 hover:bg-stone-800 transition-colors"
                     title="Remove URL"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -219,24 +219,24 @@ export const CharacterFormModal: React.FC<CharacterFormModalProps> = ({
                 </div>
               ))}
             </div>
-            <p className="text-[11px] text-zinc-500">
+            <p className="text-[11px] text-stone-500">
               Each character can have between 1 and 6 distinct photos. In Classic mode, you can inspect each photo, and random photos will be drawn during games.
             </p>
           </div>
 
           {/* Submit Actions */}
-          <div className="flex items-center gap-3 pt-3 border-t border-zinc-800">
+          <div className="flex items-center gap-3 pt-3 border-t border-stone-800">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold text-sm transition-colors"
+              className="flex-1 py-3 px-4 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-semibold text-sm transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
+              className="flex-1 py-3 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white font-bold text-sm shadow-lg shadow-amber-600/30 transition-all flex items-center justify-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
               <span>{initialCharacter ? 'Update Character' : 'Save Character'}</span>

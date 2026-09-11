@@ -53,7 +53,7 @@ export const ClassicMode: React.FC<ClassicModeProps> = ({
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
       {/* Left Column: Character Image Viewport (7 Cols) */}
       <div className="lg:col-span-7 flex flex-col items-center">
-        <div className="relative w-full max-w-md aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-900 border-2 border-zinc-800 shadow-2xl shadow-black/50 group">
+        <div className="relative w-full max-w-md aspect-[3/4] rounded-3xl overflow-hidden bg-stone-900 border-2 border-stone-800 shadow-2xl shadow-black/50 group">
           <img
             src={currentImage}
             alt="Guess this character"
@@ -93,7 +93,7 @@ export const ClassicMode: React.FC<ClassicModeProps> = ({
                     }}
                     className={`w-2 h-2 rounded-full transition-all ${
                       idx === activePhotoIndex
-                        ? 'w-5 bg-indigo-400'
+                        ? 'w-5 bg-amber-400'
                         : 'bg-white/40 hover:bg-white/70'
                     }`}
                   />
@@ -110,7 +110,7 @@ export const ClassicMode: React.FC<ClassicModeProps> = ({
           </div>
         </div>
 
-        <p className="text-xs text-zinc-500 mt-3 text-center">
+        <p className="text-xs text-stone-500 mt-3 text-center">
           {images.length > 1
             ? `Viewing photo ${activePhotoIndex + 1} of ${images.length}. Use arrows or dots to browse photos.`
             : 'Single photo available for this character.'}
@@ -120,12 +120,12 @@ export const ClassicMode: React.FC<ClassicModeProps> = ({
       {/* Right Column: 3 Name Options (5 Cols) */}
       <div className="lg:col-span-5 flex flex-col justify-center space-y-4">
         <div className="space-y-1">
-          <div className="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+          <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Identify Character</span>
           </div>
           <h3 className="text-xl font-bold text-white">Who is pictured here?</h3>
-          <p className="text-xs text-zinc-400">Click a name or press 1, 2, 3 on your keyboard.</p>
+          <p className="text-xs text-stone-400">Click a name or press 1, 2, 3 on your keyboard.</p>
         </div>
 
         <div className="space-y-3 pt-2">
@@ -133,7 +133,7 @@ export const ClassicMode: React.FC<ClassicModeProps> = ({
             const isSelected = selectedId === option.id;
             const isCorrectTarget = option.id === targetCharacter.id;
 
-            let buttonStyle = 'bg-zinc-800/80 hover:bg-zinc-800 border-zinc-700/80 text-zinc-200 hover:border-zinc-500';
+            let buttonStyle = 'bg-stone-800/80 hover:bg-stone-800 border-stone-700/80 text-stone-200 hover:border-stone-500';
             let icon = null;
 
             if (isAnswered) {
@@ -144,7 +144,7 @@ export const ClassicMode: React.FC<ClassicModeProps> = ({
                 buttonStyle = 'bg-rose-500/20 border-rose-500 text-rose-300 font-bold shadow-lg shadow-rose-500/20';
                 icon = <XCircle className="w-5 h-5 text-rose-400" />;
               } else {
-                buttonStyle = 'opacity-40 bg-zinc-900 border-zinc-800 text-zinc-500 cursor-not-allowed';
+                buttonStyle = 'opacity-40 bg-stone-900 border-stone-800 text-stone-500 cursor-not-allowed';
               }
             }
 
@@ -157,7 +157,7 @@ export const ClassicMode: React.FC<ClassicModeProps> = ({
                 className={`w-full p-4 rounded-2xl border text-left flex items-center justify-between transition-all duration-200 group ${buttonStyle}`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-7 h-7 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center text-xs font-bold text-zinc-400 group-hover:text-white transition-colors">
+                  <span className="w-7 h-7 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center text-xs font-bold text-stone-400 group-hover:text-white transition-colors">
                     {index + 1}
                   </span>
                   <span className="text-base font-semibold">{option.name}</span>

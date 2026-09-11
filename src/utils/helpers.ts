@@ -21,3 +21,19 @@ export function formatTime(seconds: number): string {
   const secs = seconds % 60;
   return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
+
+export function isAvatarMatch(imageUrl?: string, avatarUrl?: string): boolean {
+  if (!imageUrl || !avatarUrl) return false;
+  if (imageUrl === avatarUrl) return true;
+  const getCleanFilename = (u: string) => {
+    try {
+      const parsed = new URL(u);
+      return parsed.pathname.split('/').filter(Boolean).pop() || '';
+    } catch {
+      return u.split('?')[0].split('/').filter(Boolean).pop() || '';
+    }
+  };
+  const f1 = getCleanFilename(imageUrl);
+  const f2 = getCleanFilename(avatarUrl);
+  return f1 !== '' && f1 === f2;
+}

@@ -76,7 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-stone-800/80 bg-stone-950/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
@@ -84,19 +84,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setCurrentTab('lobby')}
             className="flex items-center gap-3 cursor-pointer group select-none"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-orange-600 to-pink-500 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
               G
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-xl tracking-tight text-white group-hover:text-indigo-400 transition-colors">
+                <span className="font-bold text-xl tracking-tight text-white group-hover:text-amber-400 transition-colors">
                   GoooG
                 </span>
-                <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
                   SRS Engine
                 </span>
               </div>
-              <p className="text-xs text-zinc-400 hidden sm:block">Character Guessing Game</p>
+              <p className="text-xs text-stone-400 hidden sm:block">Character Guessing Game</p>
             </div>
           </div>
 
@@ -106,8 +106,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setCurrentTab('lobby')}
               className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 currentTab === 'lobby'
-                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                  ? 'bg-amber-600/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                  : 'text-stone-400 hover:text-stone-200 hover:bg-stone-900'
               }`}
             >
               <Gamepad2 className="w-4 h-4" />
@@ -118,13 +118,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setCurrentTab('gallery')}
               className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 currentTab === 'gallery'
-                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                  ? 'bg-amber-600/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                  : 'text-stone-400 hover:text-stone-200 hover:bg-stone-900'
               }`}
             >
               <Users className="w-4 h-4" />
               <span>Gallery</span>
-              <span className="text-xs px-1.5 py-0.2 rounded-full bg-zinc-800 text-zinc-300">
+              <span className="text-xs px-1.5 py-0.2 rounded-full bg-stone-800 text-stone-300">
                 {activeCount}
               </span>
             </button>
@@ -133,8 +133,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setCurrentTab('analytics')}
               className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 currentTab === 'analytics'
-                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                  ? 'bg-amber-600/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                  : 'text-stone-400 hover:text-stone-200 hover:bg-stone-900'
               }`}
             >
               <BarChart3 className="w-4 h-4" />
@@ -150,8 +150,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setCurrentTab('scraper')}
               className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 currentTab === 'scraper'
-                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                  ? 'bg-amber-600/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                  : 'text-stone-400 hover:text-stone-200 hover:bg-stone-900'
               }`}
             >
               <Globe className="w-4 h-4" />
@@ -165,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={handleCloudSync}
               disabled={isSyncing}
               title="Sync with Cloud (Cloudflare D1 / KV)"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-semibold transition-colors disabled:opacity-50"
             >
               {isSyncing ? (
                 <>
@@ -190,21 +190,21 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => fileInputRef.current?.click()}
               title="Import JSON Backup"
-              className="p-2 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 transition-colors"
+              className="p-2 rounded-lg text-stone-400 hover:text-stone-200 hover:bg-stone-900 transition-colors"
             >
               <Upload className="w-4 h-4" />
             </button>
             <button
               onClick={handleExport}
               title="Export JSON Backup"
-              className="p-2 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 transition-colors"
+              className="p-2 rounded-lg text-stone-400 hover:text-stone-200 hover:bg-stone-900 transition-colors"
             >
               <Download className="w-4 h-4" />
             </button>
             <button
               onClick={handleReset}
               title="Reset to Defaults"
-              className="p-2 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-zinc-900 transition-colors"
+              className="p-2 rounded-lg text-stone-400 hover:text-rose-400 hover:bg-stone-900 transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
             </button>

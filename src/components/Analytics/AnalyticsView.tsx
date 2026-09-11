@@ -42,14 +42,14 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       {/* Top Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-2">
             <Brain className="w-3.5 h-3.5" />
             <span>SuperMemo SM-2 Adaptive Intelligence</span>
           </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
             Analytics & Spaced Repetition (SRS)
           </h1>
-          <p className="text-sm text-zinc-400 mt-1">
+          <p className="text-sm text-stone-400 mt-1">
             Track individual character memory retention, success rates, and optimal review schedules.
           </p>
         </div>
@@ -65,7 +65,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             <span>Start Review Session ({dueCharacters.length} Due)</span>
           </button>
         ) : (
-          <div className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-medium flex items-center gap-2">
+          <div className="px-4 py-2.5 rounded-xl bg-stone-900 border border-stone-800 text-stone-400 text-xs font-medium flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-emerald-400" />
             <span>All active characters are caught up on review!</span>
           </div>
@@ -74,68 +74,68 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
 
       {/* Primary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-2">
+        <div className="p-5 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">
               Overall Accuracy
             </span>
-            <TrendingUp className="w-4 h-4 text-indigo-400" />
+            <TrendingUp className="w-4 h-4 text-amber-400" />
           </div>
           <div className="text-3xl font-black text-white">{overallAccuracy}%</div>
-          <div className="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-stone-800 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-emerald-500"
+              className="h-full bg-gradient-to-r from-amber-500 to-emerald-500"
               style={{ width: `${overallAccuracy}%` }}
             />
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-2">
+        <div className="p-5 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">
               Correct Guesses
             </span>
             <CheckCircle className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-3xl font-black text-emerald-400">{totalCorrect}</div>
-          <p className="text-xs text-zinc-500">out of {totalAttempts} total attempts</p>
+          <p className="text-xs text-stone-500">out of {totalAttempts} total attempts</p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-2">
+        <div className="p-5 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">
               Incorrect Guesses
             </span>
             <XCircle className="w-4 h-4 text-rose-400" />
           </div>
           <div className="text-3xl font-black text-rose-400">{totalIncorrect}</div>
-          <p className="text-xs text-zinc-500">Scheduled for tighter intervals</p>
+          <p className="text-xs text-stone-500">Scheduled for tighter intervals</p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-2">
+        <div className="p-5 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">
               Retention Health
             </span>
             <Brain className="w-4 h-4 text-amber-400" />
           </div>
           <div className="text-3xl font-black text-white">{masteredCount} Mastered</div>
-          <p className="text-xs text-zinc-500">{learningCount} currently in active learning</p>
+          <p className="text-xs text-stone-500">{learningCount} currently in active learning</p>
         </div>
       </div>
 
       {/* Detailed Character Performance Table */}
-      <div className="rounded-3xl bg-zinc-900/90 border border-zinc-800 overflow-hidden shadow-xl">
-        <div className="p-5 border-b border-zinc-800 flex items-center justify-between">
+      <div className="rounded-3xl bg-stone-900/90 border border-stone-800 overflow-hidden shadow-xl">
+        <div className="p-5 border-b border-stone-800 flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold text-white">Character Retention Breakdown</h3>
-            <p className="text-xs text-zinc-400">Detailed answers and next due date per character</p>
+            <p className="text-xs text-stone-400">Detailed answers and next due date per character</p>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-zinc-300">
-            <thead className="bg-zinc-950/60 text-xs uppercase tracking-wider text-zinc-400 border-b border-zinc-800">
+          <table className="w-full text-left text-sm text-stone-300">
+            <thead className="bg-stone-950/60 text-xs uppercase tracking-wider text-stone-400 border-b border-stone-800">
               <tr>
                 <th className="py-3.5 px-4 font-semibold">Character</th>
                 <th className="py-3.5 px-4 font-semibold">Category</th>
@@ -146,7 +146,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <th className="py-3.5 px-4 font-semibold">Interval / Next Due</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/60">
+            <tbody className="divide-y divide-stone-800/60">
               {characters.map((char) => {
                 const stage = getRetentionStage(char.stats);
                 const charSeen = char.stats?.timesSeen || 0;
@@ -156,17 +156,17 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 const isDue = isDueForReview(char.stats);
 
                 return (
-                  <tr key={char.id} className="hover:bg-zinc-800/40 transition-colors">
+                  <tr key={char.id} className="hover:bg-stone-800/40 transition-colors">
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <img
                           src={char.avatarUrl || char.images[0]}
                           alt={char.name}
-                          className="w-9 h-11 object-cover rounded-lg border border-zinc-700"
+                          className="w-9 h-11 object-cover rounded-lg border border-stone-700"
                         />
                         <div>
                           <span className="font-bold text-white block">{char.name}</span>
-                          <span className="text-[11px] text-zinc-500">
+                          <span className="text-[11px] text-stone-500">
                             {char.images.length} photos
                           </span>
                         </div>
@@ -174,7 +174,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                     </td>
 
                     <td className="py-3 px-4">
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-stone-800 text-stone-300 border border-stone-700">
                         {char.category}
                       </span>
                     </td>
@@ -195,13 +195,13 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
 
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-16 h-2 rounded-full bg-zinc-800 overflow-hidden">
+                        <div className="w-16 h-2 rounded-full bg-stone-800 overflow-hidden">
                           <div
                             className={`h-full ${charAcc >= 70 ? 'bg-emerald-500' : charAcc >= 40 ? 'bg-amber-500' : 'bg-rose-500'}`}
                             style={{ width: `${charAcc}%` }}
                           />
                         </div>
-                        <span className="text-xs font-semibold text-zinc-300">
+                        <span className="text-xs font-semibold text-stone-300">
                           {charSeen > 0 ? `${charAcc}%` : '-'}
                         </span>
                       </div>
@@ -209,12 +209,12 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
 
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-3.5 h-3.5 text-zinc-400" />
-                        <span className={`text-xs font-semibold ${isDue ? 'text-amber-400 font-bold' : 'text-zinc-400'}`}>
+                        <Calendar className="w-3.5 h-3.5 text-stone-400" />
+                        <span className={`text-xs font-semibold ${isDue ? 'text-amber-400 font-bold' : 'text-stone-400'}`}>
                           {formatDateDue(char.stats?.nextReviewDate)}
                         </span>
                         {char.stats?.interval > 0 && (
-                          <span className="text-[10px] text-zinc-500">
+                          <span className="text-[10px] text-stone-500">
                             ({char.stats.interval}d interval)
                           </span>
                         )}

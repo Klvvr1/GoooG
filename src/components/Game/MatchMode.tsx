@@ -38,7 +38,7 @@ export const MatchMode: React.FC<MatchModeProps> = ({
     const isSelected = selectedChoice === choice;
     const isCorrect = correctOption === choice;
 
-    let borderStyle = 'border-zinc-800 hover:border-indigo-500/60 hover:-translate-y-1';
+    let borderStyle = 'border-stone-800 hover:border-amber-500/60 hover:-translate-y-1';
     let overlay = null;
 
     if (isAnswered) {
@@ -61,14 +61,14 @@ export const MatchMode: React.FC<MatchModeProps> = ({
           </div>
         );
       } else {
-        borderStyle = 'opacity-30 border-zinc-900 grayscale';
+        borderStyle = 'opacity-30 border-stone-900 grayscale';
       }
     }
 
     return (
       <div
         onClick={() => !isAnswered && onAnswer(choice)}
-        className={`relative flex-1 aspect-[3/4] max-h-[480px] rounded-3xl overflow-hidden bg-zinc-900 border-2 cursor-pointer transition-all duration-300 shadow-2xl group select-none ${borderStyle}`}
+        className={`relative flex-1 aspect-[3/4] max-h-[480px] rounded-3xl overflow-hidden bg-stone-900 border-2 cursor-pointer transition-all duration-300 shadow-2xl group select-none ${borderStyle}`}
       >
         <img
           src={data.image}
@@ -80,13 +80,13 @@ export const MatchMode: React.FC<MatchModeProps> = ({
         {/* Shortcut Badge */}
         <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-md text-white text-xs font-bold border border-white/20">
           <span>Option {choice}</span>
-          <span className="text-zinc-400 flex items-center gap-0.5">({shortcutIcon} {shortcutLabel})</span>
+          <span className="text-stone-400 flex items-center gap-0.5">({shortcutIcon} {shortcutLabel})</span>
         </div>
 
         {/* Hover Cue */}
         {!isAnswered && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-6">
-            <span className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-sm shadow-lg">
+            <span className="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold text-sm shadow-lg">
               Pick Image {choice}
             </span>
           </div>
@@ -101,16 +101,16 @@ export const MatchMode: React.FC<MatchModeProps> = ({
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Target Name Header */}
-      <div className="text-center space-y-2 p-6 rounded-3xl bg-zinc-900/90 border border-zinc-800 shadow-xl">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-bold uppercase tracking-wider">
+      <div className="text-center space-y-2 p-6 rounded-3xl bg-stone-900/90 border border-stone-800 shadow-xl">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold uppercase tracking-wider">
           <UserCheck className="w-3.5 h-3.5" />
           <span>Category: {targetCharacter.category}</span>
         </div>
         <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-          Find the portrait of <span className="text-indigo-400 underline decoration-indigo-500/40">{targetCharacter.name}</span>
+          Find the portrait of <span className="text-amber-400 underline decoration-amber-500/40">{targetCharacter.name}</span>
         </h2>
-        <p className="text-xs sm:text-sm text-zinc-400">
-          Click the matching photo or use <kbd className="px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 font-mono text-xs">←</kbd> and <kbd className="px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 font-mono text-xs">→</kbd> arrow keys.
+        <p className="text-xs sm:text-sm text-stone-400">
+          Click the matching photo or use <kbd className="px-2 py-0.5 rounded bg-stone-800 border border-stone-700 font-mono text-xs">←</kbd> and <kbd className="px-2 py-0.5 rounded bg-stone-800 border border-stone-700 font-mono text-xs">→</kbd> arrow keys.
         </p>
       </div>
 

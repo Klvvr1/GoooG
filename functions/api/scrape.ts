@@ -55,8 +55,8 @@ function parsePornstarsList(html: string, category: string) {
         category,
         profileUrl: href,
         avatarUrl,
-        availableImages: [avatarUrl],
-        selectedImages: [avatarUrl],
+        availableImages: [],
+        selectedImages: [],
       });
     }
   }
@@ -64,7 +64,7 @@ function parsePornstarsList(html: string, category: string) {
   return results;
 }
 
-function parseProfileGalleries(html: string): string[] {
+function parseProfileGalleries(html: string, avatarUrl?: string): string[] {
   const ulMatches = html.match(/<ul[^>]*id=["']tiles["'][^>]*>([\s\S]*?)<\/ul>/i)
     || html.match(/<ul[^>]*class=["'][^"']*thumbs[^"']*["'][^>]*>([\s\S]*?)<\/ul>/i);
     
@@ -73,12 +73,27 @@ function parseProfileGalleries(html: string): string[] {
   const liMatches = [...ulMatches[1].matchAll(/<li[^>]*class=['"][^'"]*thumbwook[^'"]*['"][^>]*>([\s\S]*?)<\/li>/gi)];
   const images: string[] = [];
 
+  const getCleanFilename = (u: string) => {
+    try {
+      const p = new URL(u);
+      return p.pathname.split('/').filter(Boolean).pop() || '';
+    } catch {
+      return u.split('?')[0].split('/').filter(Boolean).pop() || '';
+    }
+  };
+  const avatarFile = avatarUrl ? getCleanFilename(avatarUrl) : '';
+
   for (const match of liMatches) {
     const liContent = match[1];
     const imgMatch = liContent.match(/data-src=['"]([^'"]+)['"]/i)
       || liContent.match(/src=['"](https:\/\/cdni\.pornpics\.com\/[^'"]+)['"]/i);
     if (imgMatch && imgMatch[1] && !imgMatch[1].includes('1px.png')) {
-      images.push(imgMatch[1]);
+      const src = imgMatch[1];
+      // Exclude if it matches the profile avatar
+      if (avatarUrl && (src === avatarUrl || (avatarFile && getCleanFilename(src) === avatarFile))) {
+        continue;
+      }
+      images.push(src);
     }
   }
 
@@ -99,6 +114,7 @@ export async function onRequestGet(context: { request: Request }): Promise<Respo
   const page = parseInt(url.searchParams.get('page') || '1', 10) || 1;
   const targetUrl = url.searchParams.get('target');
   const profileUrl = url.searchParams.get('profileUrl');
+  const avatarUrl = url.searchParams.get('avatarUrl') || undefined;
 
   try {
     // 1. If fetching photos for a specific character profile
@@ -110,7 +126,7 @@ export async function onRequestGet(context: { request: Request }): Promise<Respo
         },
       });
       const html = await res.text();
-      const images = parseProfileGalleries(html);
+      const images = parseProfileGalleries(html, avatarUrl);
       return new Response(JSON.stringify({ success: true, profileUrl, images }), {
         headers: CORS_HEADERS,
       });

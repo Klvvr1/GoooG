@@ -262,19 +262,19 @@ export const GameContainer: React.FC<GameContainerProps> = ({
         <div className="flex items-center justify-between">
           {/* Round & Mode Info */}
           <div className="flex items-center gap-3">
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700">
+            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-stone-800 text-stone-300 border border-stone-700">
               {category.name}
             </span>
             <span className="text-sm font-semibold text-white">
-              Round <span className="text-indigo-400 font-bold">{currentIndex + 1}</span> of{' '}
+              Round <span className="text-amber-400 font-bold">{currentIndex + 1}</span> of{' '}
               {questionsDeck.length}
             </span>
           </div>
 
           {/* Quick Metrics (Timer & Streak) */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300">
-              <Timer className="w-3.5 h-3.5 text-zinc-400" />
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-900 border border-stone-800 text-xs font-medium text-stone-300">
+              <Timer className="w-3.5 h-3.5 text-stone-400" />
               <span>{formatTime(elapsedSeconds)}</span>
             </div>
 
@@ -287,7 +287,7 @@ export const GameContainer: React.FC<GameContainerProps> = ({
 
             <button
               onClick={onExit}
-              className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+              className="p-1.5 rounded-xl text-stone-400 hover:text-white hover:bg-stone-800 transition-colors"
               title="Quit to Lobby"
             >
               <X className="w-5 h-5" />
@@ -296,9 +296,9 @@ export const GameContainer: React.FC<GameContainerProps> = ({
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+        <div className="w-full h-1.5 rounded-full bg-stone-800 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300"
+            className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -326,8 +326,8 @@ export const GameContainer: React.FC<GameContainerProps> = ({
       </div>
 
       {/* Footer Navigation */}
-      <div className="pt-6 text-center text-xs text-zinc-500 flex items-center justify-center gap-2">
-        <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+      <div className="pt-6 text-center text-xs text-stone-500 flex items-center justify-center gap-2">
+        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
         <span>GoooG Spaced Repetition Engine • SuperMemo SM-2 Adaptive Algorithm</span>
       </div>
 

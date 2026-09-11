@@ -96,11 +96,11 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
         <div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
             <span>Character Gallery</span>
-            <span className="text-sm font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            <span className="text-sm font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
               {characters.length} Total
             </span>
           </h1>
-          <p className="text-sm text-zinc-400 mt-1">
+          <p className="text-sm text-stone-400 mt-1">
             Manage, customize photos (1-6 per character), and toggle game eligibility.
           </p>
         </div>
@@ -111,7 +111,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             setEditingCharacter(null);
             setIsModalOpen(true);
           }}
-          className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all"
+          className="px-5 py-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm shadow-xl shadow-amber-600/30 flex items-center justify-center gap-2 transition-all"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Character</span>
@@ -119,17 +119,17 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
       </div>
 
       {/* Filter and Search Controls Bar */}
-      <div className="p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-4">
+      <div className="p-4 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
           {/* Search */}
           <div className="md:col-span-5 relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name or category..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-stone-800/80 border border-stone-700 text-white placeholder-stone-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
             />
           </div>
 
@@ -138,7 +138,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             <select
               value={activeFilter}
               onChange={(e) => setActiveFilter(e.target.value as 'all' | 'active' | 'inactive')}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-stone-800/80 border border-stone-700 text-white text-sm focus:outline-none focus:border-amber-500 transition-colors"
             >
               <option value="all">All Statuses (Active & Inactive)</option>
               <option value="active">Active Only in Game</option>
@@ -148,11 +148,11 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
 
           {/* Sort By */}
           <div className="md:col-span-4 flex items-center gap-2">
-            <ArrowUpDown className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+            <ArrowUpDown className="w-4 h-4 text-stone-400 flex-shrink-0" />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'name' | 'acc-low' | 'acc-high' | 'seen' | 'recent')}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-stone-800/80 border border-stone-700 text-white text-sm focus:outline-none focus:border-amber-500 transition-colors"
             >
               <option value="name">Alphabetical (A - Z)</option>
               <option value="acc-low">Accuracy: Hardest First</option>
@@ -164,14 +164,14 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
         </div>
 
         {/* Category Pills & Bulk Actions */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-zinc-800/80">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-stone-800/80">
           <div className="flex flex-wrap items-center gap-1.5">
             <button
               onClick={() => setSelectedCategory('all')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 selectedCategory === 'all'
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                  ? 'bg-amber-600 text-white'
+                  : 'bg-stone-800 text-stone-400 hover:text-white'
               }`}
             >
               All Categories
@@ -182,8 +182,8 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   selectedCategory.toLowerCase() === cat.toLowerCase()
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-stone-800 text-stone-400 hover:text-white'
                 }`}
               >
                 {cat}
@@ -195,13 +195,13 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
           <div className="flex items-center gap-2 text-xs">
             <button
               onClick={() => handleBulkToggle(true)}
-              className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors"
+              className="px-2.5 py-1 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
             >
               Enable All Filtered
             </button>
             <button
               onClick={() => handleBulkToggle(false)}
-              className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors"
+              className="px-2.5 py-1 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
             >
               Disable All Filtered
             </button>
@@ -226,10 +226,10 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-3xl bg-zinc-900/50 border border-zinc-800/80 space-y-3">
-          <Users className="w-12 h-12 text-zinc-600 mx-auto" />
+        <div className="py-16 text-center rounded-3xl bg-stone-900/50 border border-stone-800/80 space-y-3">
+          <Users className="w-12 h-12 text-stone-600 mx-auto" />
           <h3 className="text-lg font-bold text-white">No characters match your criteria</h3>
-          <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+          <p className="text-xs text-stone-400 max-w-sm mx-auto">
             Try adjusting your search query, changing category filters, or click "Add New Character" to create one.
           </p>
         </div>

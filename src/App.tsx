@@ -84,10 +84,10 @@ export function App() {
 
   if (!isDbReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#090b10] text-white">
+      <div className="min-h-screen flex items-center justify-center bg-[#0c0a09] text-white">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-sm text-zinc-400 font-medium">Initializing GoooG Engine...</span>
+          <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-sm text-stone-400 font-medium">Initializing GoooG Engine...</span>
         </div>
       </div>
     );
@@ -96,7 +96,7 @@ export function App() {
   // When active game is playing
   if (activeGame) {
     return (
-      <div className="min-h-screen bg-[#090b10] text-gray-100 flex flex-col">
+      <div className="min-h-screen bg-[#0c0a09] text-gray-100 flex flex-col">
         <GameContainer
           category={activeGame.category}
           mode={activeGame.mode}
@@ -111,7 +111,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#090b10] text-gray-100 flex flex-col">
+    <div className="min-h-screen bg-[#0c0a09] text-gray-100 flex flex-col">
       <Navbar
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
@@ -150,7 +150,7 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800/80 bg-zinc-950/60 py-6 text-center text-xs text-zinc-500">
+      <footer className="border-t border-stone-800/80 bg-stone-950/60 py-6 text-center text-xs text-stone-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>GoooG • Character Guessing & Spaced Repetition Game</span>
           <span>Ready for Cloudflare Pages & GitHub</span>
