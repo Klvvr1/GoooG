@@ -46,7 +46,7 @@ export const ScrapedRow: React.FC<ScrapedRowProps> = ({
         }
       },
       {
-        rootMargin: '300px', // start loading when 300px before appearing on screen
+        rootMargin: '400px', // start loading 400px before appearing on screen
         threshold: 0.01,
       }
     );

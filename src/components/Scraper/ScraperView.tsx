@@ -25,7 +25,7 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
   const categories = INITIAL_CATEGORIES.filter((c) => c.id !== 'mix').map((c) => c.name);
 
   // Lazy load photos for a single character on demand / viewport intersection
-  const handleLazyLoadPhotos = async (characterId: string, profileUrl: string, avatarUrl?: string) => {
+  const handleLazyLoadPhotos = React.useCallback(async (characterId: string, profileUrl: string, avatarUrl?: string) => {
     setCandidates((prev) =>
       prev.map((c) => (c.id === characterId ? { ...c, isLoadingPhotos: true } : c))
     );
@@ -52,12 +52,12 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
             const merged = Array.from(new Set([...item.availableImages, ...data.images]))
               .filter((img) => !isAvatarMatch(img, finalAvatar));
 
-            // Auto-select up to 3 gallery photos if none chosen yet
+            // Auto-select up to 3 gallery photos if none chosen yet or only initial thumb was selected
             const currentGallerySelected = item.selectedImages.filter(
               (img) => !isAvatarMatch(img, finalAvatar)
             );
             const autoSelected =
-              currentGallerySelected.length === 0
+              currentGallerySelected.length <= 1
                 ? merged.slice(0, Math.min(3, merged.length))
                 : currentGallerySelected;
 
@@ -79,10 +79,10 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
     } catch (e) {
       console.error('Error lazy loading gallery photos:', e);
       setCandidates((prev) =>
-        prev.map((c) => (c.id === characterId ? { ...c, isLoadingPhotos: false } : c))
+        prev.map((c) => (c.id === characterId ? { ...c, isLoadingPhotos: false, hasLoadedPhotos: true } : c))
       );
     }
-  };
+  }, []);
 
   // Perform Scrape / Fetch for all characters on page
   const handleFetch = async () => {
@@ -112,8 +112,8 @@ export const ScraperView: React.FC<ScraperViewProps> = ({ onDataChanged }) => {
 
         setCandidates(results);
 
-        // Preload gallery photos for the first 3 characters immediately for instant UX
-        const topChars = results.slice(0, 3).filter((c) => c.profileUrl);
+        // Preload gallery photos for the first 6 characters immediately for instant UX
+        const topChars = results.slice(0, 6).filter((c) => c.profileUrl);
         topChars.forEach((c) => {
           handleLazyLoadPhotos(c.id, c.profileUrl!, c.avatarUrl);
         });

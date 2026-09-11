@@ -58,7 +58,11 @@ function parsePornstarsList(html: string, category: string) {
         : '';
       const proxiedAvatarUrl = officialAvatarCdn 
         ? `/api/avatar?url=${encodeURIComponent(officialAvatarCdn)}` 
-        : listingThumb;
+        : '';
+      // Proxied listing thumb for initial display in horizontal gallery strip
+      const proxiedListingThumb = listingThumb
+        ? `/api/avatar?url=${encodeURIComponent(listingThumb)}`
+        : '';
 
       results.push({
         id: `pp-${cleanSlug || Math.random().toString(36).slice(2, 8)}`,
@@ -67,9 +71,9 @@ function parsePornstarsList(html: string, category: string) {
         profileUrl: href,
         // Proxied avatar URL for the small square box - always the official profile photo
         avatarUrl: proxiedAvatarUrl,
-        // Start with listing thumb in gallery. Lazy-load will add more gallery photos.
-        availableImages: listingThumb ? [listingThumb] : [],
-        selectedImages: listingThumb ? [listingThumb] : [],
+        // Start with proxied listing thumb in gallery. Lazy-load will add more gallery photos.
+        availableImages: proxiedListingThumb ? [proxiedListingThumb] : [],
+        selectedImages: proxiedListingThumb ? [proxiedListingThumb] : [],
       });
     }
   }
@@ -89,9 +93,9 @@ function parseProfileGalleries(html: string, avatarUrl?: string): string[] {
   const getCleanFilename = (u: string) => {
     try {
       const p = new URL(u);
-      return p.pathname.split('/').filter(Boolean).pop() || '';
+      return p.pathname.split('/').filter(Boolean).pop()?.toLowerCase() || '';
     } catch {
-      return u.split('?')[0].split('/').filter(Boolean).pop() || '';
+      return u.split('?')[0].split('/').filter(Boolean).pop()?.toLowerCase() || '';
     }
   };
   const avatarFile = avatarUrl ? getCleanFilename(avatarUrl) : '';
@@ -106,7 +110,8 @@ function parseProfileGalleries(html: string, avatarUrl?: string): string[] {
       if (avatarUrl && (src === avatarUrl || (avatarFile && getCleanFilename(src) === avatarFile))) {
         continue;
       }
-      images.push(src);
+      // Return proxied image URL so the browser can load it without 403 Forbidden
+      images.push(`/api/avatar?url=${encodeURIComponent(src)}`);
     }
   }
 

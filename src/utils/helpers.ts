@@ -24,24 +24,33 @@ export function formatTime(seconds: number): string {
 
 export function isAvatarMatch(imageUrl?: string, avatarUrl?: string): boolean {
   if (!imageUrl) return false;
-  
-  // Any proxy avatar URL or models directory URL is strictly an avatar, never a gallery image
-  if (imageUrl.startsWith('/api/avatar') || imageUrl.includes('/models/')) {
+
+  const unwrap = (u: string) => {
+    try {
+      if (u.includes('url=')) {
+        const match = u.match(/[?&]url=([^&]+)/);
+        if (match) return decodeURIComponent(match[1]);
+      }
+      return u;
+    } catch {
+      return u;
+    }
+  };
+
+  const realImage = unwrap(imageUrl);
+  const realAvatar = avatarUrl ? unwrap(avatarUrl) : '';
+
+  // Any model profile avatar path is strictly an avatar, never a gallery scene
+  if (realImage.includes('/models/')) {
     return true;
   }
 
-  if (!avatarUrl) return false;
-  if (imageUrl === avatarUrl) return true;
+  if (realAvatar && realImage === realAvatar) {
+    return true;
+  }
 
-  const extractFilename = (u: string) => {
+  const getFilename = (u: string) => {
     try {
-      // If it's a proxy url like /api/avatar?url=https%3A... unwrap the inner url
-      if (u.includes('url=')) {
-        const match = u.match(/[?&]url=([^&]+)/);
-        if (match) {
-          u = decodeURIComponent(match[1]);
-        }
-      }
       const parsed = new URL(u, 'https://gooog-b19.pages.dev');
       return parsed.pathname.split('/').filter(Boolean).pop()?.toLowerCase() || '';
     } catch {
@@ -49,7 +58,13 @@ export function isAvatarMatch(imageUrl?: string, avatarUrl?: string): boolean {
     }
   };
 
-  const f1 = extractFilename(imageUrl);
-  const f2 = extractFilename(avatarUrl);
-  return f1 !== '' && f1 === f2;
+  if (realAvatar) {
+    const f1 = getFilename(realImage);
+    const f2 = getFilename(realAvatar);
+    if (f1 && f2 && f1 === f2) {
+      return true;
+    }
+  }
+
+  return false;
 }
