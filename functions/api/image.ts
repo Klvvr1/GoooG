@@ -1,11 +1,18 @@
 // Cloudflare Pages Functions API route: /api/avatar
 // Proxies model avatar images from cdni.pornpics.com/models/ to bypass 403 restrictions
 
-const CORS_HEADERS = {
+const SUCCESS_CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': '*',
   'Cache-Control': 'public, max-age=86400, s-maxage=604800',
+};
+
+const ERROR_CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': '*',
+  'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
 };
 
 export async function onRequestGet(context: { request: Request }): Promise<Response> {
@@ -13,12 +20,12 @@ export async function onRequestGet(context: { request: Request }): Promise<Respo
   const imageUrl = url.searchParams.get('url');
 
   if (!imageUrl) {
-    return new Response('Missing url param', { status: 400, headers: CORS_HEADERS });
+    return new Response('Missing url param', { status: 400, headers: ERROR_CORS_HEADERS });
   }
 
-  // Allow proxying any image from cdni.pornpics.com (models/ avatar and 460/ gallery photos)
+  // Allow proxying any image from cdni.pornpics.com (models/ avatar and 1280/ gallery photos)
   if (!imageUrl.startsWith('https://cdni.pornpics.com/')) {
-    return new Response('Forbidden: only cdni.pornpics.com allowed', { status: 403, headers: CORS_HEADERS });
+    return new Response('Forbidden: only cdni.pornpics.com allowed', { status: 403, headers: ERROR_CORS_HEADERS });
   }
 
   try {
@@ -32,7 +39,7 @@ export async function onRequestGet(context: { request: Request }): Promise<Respo
     });
 
     if (!res.ok) {
-      return new Response('Image fetch failed: ' + res.status, { status: res.status, headers: CORS_HEADERS });
+      return new Response('Image fetch failed: ' + res.status, { status: res.status, headers: ERROR_CORS_HEADERS });
     }
 
     const contentType = res.headers.get('content-type') || 'image/jpeg';
@@ -41,13 +48,13 @@ export async function onRequestGet(context: { request: Request }): Promise<Respo
     return new Response(body, {
       status: 200,
       headers: {
-        ...CORS_HEADERS,
+        ...SUCCESS_CORS_HEADERS,
         'Content-Type': contentType,
         'Content-Length': body.byteLength.toString(),
       },
     });
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-    return new Response('Proxy error: ' + errorMessage, { status: 500, headers: CORS_HEADERS });
+    return new Response('Proxy error: ' + errorMessage, { status: 500, headers: ERROR_CORS_HEADERS });
   }
 }

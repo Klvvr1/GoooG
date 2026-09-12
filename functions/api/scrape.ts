@@ -58,11 +58,11 @@ function parsePornstarsList(html: string, category: string) {
         ? `https://cdni.pornpics.com/models/${firstChar}/${cleanSlug.replace(/-/g, '_')}.jpg` 
         : '';
       const proxiedAvatarUrl = officialAvatarCdn 
-        ? `/api/avatar?url=${encodeURIComponent(officialAvatarCdn)}` 
+        ? `/api/avatar?url=${encodeURIComponent(officialAvatarCdn)}&v=1280` 
         : '';
       // Proxied listing thumb (1280px high-res) for initial display in horizontal gallery strip
       const proxiedListingThumb = listingThumb
-        ? `/api/avatar?url=${encodeURIComponent(listingThumb)}`
+        ? `/api/avatar?url=${encodeURIComponent(listingThumb)}&v=1280`
         : '';
 
       results.push({
@@ -113,8 +113,8 @@ function parseProfileGalleries(html: string, avatarUrl?: string): string[] {
       if (avatarUrl && (src === avatarUrl || (avatarFile && getCleanFilename(src) === avatarFile))) {
         continue;
       }
-      // Return proxied image URL so the browser can load it without 403 Forbidden
-      images.push(`/api/avatar?url=${encodeURIComponent(src)}`);
+      // Return proxied image URL with cache-buster so the browser gets fresh high-res images
+      images.push(`/api/avatar?url=${encodeURIComponent(src)}&v=1280`);
     }
   }
 
@@ -155,7 +155,7 @@ export async function onRequestGet(context: { request: Request }): Promise<Respo
       
       // Always proxy avatar image through our /api/avatar endpoint
       const proxiedAvatar = exactAvatarCdn
-        ? `/api/avatar?url=${encodeURIComponent(exactAvatarCdn)}`
+        ? `/api/avatar?url=${encodeURIComponent(exactAvatarCdn)}&v=1280`
         : avatarUrl; // Fall back to whatever was passed in (already proxied)
 
       const images = parseProfileGalleries(html, exactAvatarCdn || undefined);
