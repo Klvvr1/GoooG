@@ -17,10 +17,12 @@ export const db = new GoooGDatabase();
 
 export async function initializeDatabase(): Promise<void> {
   try {
-    const count = await db.characters.count();
-    if (count === 0) {
-      await db.characters.bulkAdd(INITIAL_CHARACTERS);
-      console.log('Database initialized with default characters.');
+    // One-time cleanup of all legacy and default characters from local IndexedDB
+    const hasCleaned = localStorage.getItem('gooog_cleared_all_characters_v2');
+    if (!hasCleaned) {
+      await db.characters.clear();
+      localStorage.setItem('gooog_cleared_all_characters_v2', 'true');
+      console.log('Database cleared of all existing and default characters.');
     }
   } catch (error) {
     console.error('Failed to initialize database:', error);
@@ -29,7 +31,6 @@ export async function initializeDatabase(): Promise<void> {
 
 export async function resetDatabaseToDefaults(): Promise<void> {
   await db.characters.clear();
-  await db.characters.bulkAdd(INITIAL_CHARACTERS);
 }
 
 export async function exportCharactersJSON(): Promise<string> {
